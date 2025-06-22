@@ -1,6 +1,6 @@
 
 test:
-	pytest --cov=src/unibool --cov-report=xml tests
+	pytest --cov=src/rbool --cov-report=xml tests
 	python3-coverage report -m --fail-under 90
 	python3-coverage html
 

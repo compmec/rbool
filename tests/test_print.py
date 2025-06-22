@@ -1,6 +1,6 @@
 import pytest
 
-from unibool import (
+from rbool import (
     DisjointR1,
     EmptyR1,
     IntervalR1,

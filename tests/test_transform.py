@@ -1,6 +1,6 @@
 import pytest
 
-from unibool import (
+from rbool import (
     EmptyR1,
     IntervalR1,
     SingleValueR1,

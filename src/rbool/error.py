@@ -1,5 +1,5 @@
 """
-Definitions of common exceptions for :mod:`unibool` module.
+Definitions of common exceptions for :mod:`rbool` module.
 """
 
 

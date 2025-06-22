@@ -1,7 +1,7 @@
 import pytest
 
-from unibool import EmptyR1, IntervalR1, SingleValueR1, WholeR1
-from unibool.numbs import NEGINF, POSINF
+from rbool import EmptyR1, IntervalR1, SingleValueR1, WholeR1
+from rbool.numbs import NEGINF, POSINF
 
 
 @pytest.mark.order(14)

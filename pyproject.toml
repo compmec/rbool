@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "unibool"
+name = "rbool"
 version = "0.0.1"
 description = "1D boolean operations"
 authors = ["Carlos Adir <carlos.adir.leite@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "unibool", from = "src" }]
+packages = [{ include = "rbool", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -27,7 +27,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.scriv]
-version = "literal: src/unibool/__init__.py: __version__"
+version = "literal: src/rbool/__init__.py: __version__"
 
 [tool.black]
 line-length = 79

@@ -1,7 +1,7 @@
 import pytest
 
-from unibool import infimum, maximum, minimum, supremum
-from unibool.numbs import NEGINF, POSINF
+from rbool import infimum, maximum, minimum, supremum
+from rbool.numbs import NEGINF, POSINF
 
 
 @pytest.mark.order(17)

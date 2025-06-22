@@ -1,6 +1,6 @@
 import pytest
 
-from unibool import EmptyR1, IntervalR1, SingleValueR1, WholeR1
+from rbool import EmptyR1, IntervalR1, SingleValueR1, WholeR1
 
 
 @pytest.mark.order(12)

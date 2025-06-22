@@ -1,6 +1,6 @@
 import pytest
 
-from unibool.numbs import Is, To
+from rbool.numbs import Is, To
 
 
 @pytest.mark.order(1)

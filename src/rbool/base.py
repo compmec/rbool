@@ -41,7 +41,7 @@ class Future:
         Example
         -------
         >>> type(convert("{}"))
-        <class "unibool.base.EmptyR2">
+        <class "rbool.base.EmptyR2">
         """
         raise NotExpectedError
 
@@ -51,7 +51,7 @@ class Future:
         Computes the union of some SubSetR1 instances
 
         This function is overrided by a function defined
-        in the `unibool.bool1d.py` file
+        in the `rbool.bool1d.py` file
         """
         raise NotExpectedError
 
@@ -61,7 +61,7 @@ class Future:
         Computes the intersection of some SubSetR1 instances
 
         This function is overrided by a function defined
-        in the `unibool.bool1d.py` file
+        in the `rbool.bool1d.py` file
         """
         raise NotExpectedError
 
@@ -71,7 +71,7 @@ class Future:
         Computes the inversion of a SubSetR1 instance
 
         This function is overrided by a function defined
-        in the `unibool.bool1d.py` file
+        in the `rbool.bool1d.py` file
         """
         raise NotExpectedError
 
@@ -81,7 +81,7 @@ class Future:
         Checks if the subsetb is contained by subseta
 
         This function is overrided by a function defined
-        in the `unibool.bool1d.py` file
+        in the `rbool.bool1d.py` file
         """
         raise NotExpectedError
 
@@ -91,7 +91,7 @@ class Future:
         Moves the SubSetR1 instance by given vector
 
         This function is overrided by a function defined
-        in the `unibool.transform.py` file
+        in the `rbool.transform.py` file
         """
         raise NotExpectedError
 
@@ -103,7 +103,7 @@ class Future:
         Scales the SubSetR1 instance by given amount
 
         This function is overrided by a function defined
-        in the `unibool.transform.py` file
+        in the `rbool.transform.py` file
         """
         raise NotExpectedError
 

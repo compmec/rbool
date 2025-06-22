@@ -1,6 +1,6 @@
 import pytest
 
-from unibool import (
+from rbool import (
     DisjointR1,
     EmptyR1,
     IntervalR1,
@@ -11,7 +11,7 @@ from unibool import (
     from_any,
     lower,
 )
-from unibool.numbs import NEGINF, POSINF
+from rbool.numbs import NEGINF, POSINF
 
 
 @pytest.mark.order(15)
