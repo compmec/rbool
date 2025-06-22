@@ -1,0 +1,5 @@
+rbool>=0.0.1
+sphinx
+sphinx-rtd-theme
+sphinx-gallery
+sphinx-design

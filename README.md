@@ -7,8 +7,6 @@
 [![Python Versions][pyversions-img]][pyversions-url]
 [![License: MIT][license-img]][license-url]
 
-![rbool logo](docs/source/img/logo.png)
-
 # Unibool
 
 A python package for unidimensional boolean operations

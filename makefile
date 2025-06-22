@@ -12,5 +12,8 @@ format:
 	flake8 src
 	pylint src
 
+docs:
+	sphinx-autobuild docs/ docs/_build/html
+
 html:
 	brave htmlcov/index.html
