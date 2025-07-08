@@ -35,9 +35,8 @@ def test_to():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(
     depends=[
-        "test_constants",
-        "test_numbers",
-        "test_trigonometric",
+        "test_is",
+        "test_to",
     ]
 )
 def test_all():

@@ -17,4 +17,4 @@ Future.contains = contains
 Future.scale = scale
 Future.move = move
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
