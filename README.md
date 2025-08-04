@@ -11,6 +11,58 @@
 
 A python package for unidimensional boolean operations
 
+#### Simple example
+
+```python
+>>> from rbool import *
+>>> interval = Interval(-10, 5)  # Create a closed interval
+>>> interval
+[-10, 5]
+>>> interval | (3, 8)  # Unite with open interval
+[-10, 8)
+>>> ~interval  # Complementar of the interval
+(-inf, 10) U (5, inf)
+>>> interval |= {-2, 6, 10}  # Unite with single values
+>>> interval
+[-10, 5] U {6, 10}
+>>> interval - {2, 3}  # Remove single values from interval
+[-10, 2) U (2, 3) U (3, 5] U {6, 10}
+>>> [-8, 3] in interval  # Checks if [-8, 3] is inside the interval
+True
+```
+
+The usual operations happens between two subsets:
+* `A | B`: union
+* `A & B`: intersection
+* `~A`: complementar
+* `A ^ B`: XOR
+* `A - B`: subtract
+* `A in B`: is subset ?
+
+#### Useful functions
+
+```python
+>>> minimum("[-3, 10]")  # Gets the minimum value from subset
+-3
+>>> minimum("(-3, 10]")  # Returns None, there's no minimum
+>>> infimum("(-3, 10]")  # Gets the infimum value from subset
+-3
+>>> maximum("(-3, 10]")  # Gets the maximum value
+10
+>>> supremum("(-3, 10]")
+10
+>>> lower(5)  # All values on real line less than 5
+(-inf, 5]
+>>> {-15, 0} in lower(5)  # -15 and 0 are inside (-inf, 5] ?
+True
+>>> [-3, 6] in bigger(5)  # interval [-3, 6] is inside [5, inf) ?
+False
+>>> scale("[-3, 10) U {15}", 2)  # Maps each value 'x' to '2*x'
+[-6, 20) U {30}
+>>> move("[-3, 10) U {15}", -8)  # Maps each value 'x' to 'x - 8'
+[-8, 2) U {7}
+```
+
 
 ### Installation:
 
