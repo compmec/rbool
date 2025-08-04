@@ -4,11 +4,11 @@ The main purpose of this module is to be returned from analytics roots
 or when concatenating piecewise curves
 
 Here we define 5 classes:
-* EmptyR1 : Represents an empty set {} of the real line R1
-* WholeR1 : Represents the entire real line R1
-* SingleValueR1 : Represents a subset of R1 with only one finite element
-* IntervalR1 : Represents a subset of R1 with continuous points
-* DisjointR1 : Represents the union of some SingleValueR1 and IntervalR1
+* Empty : Represents an empty set {} of the real line R1
+* Whole : Represents the entire real line R1
+* SingleValue : Represents a subset of R1 with only one finite element
+* Interval : Represents a subset of R1 with continuous points
+* Disjoint : Represents the union of some SingleValue and Interval
 
 With them, we can verify if one subset contains another subset
 It's possible to make the standard boolean operations, like union,
@@ -201,11 +201,11 @@ class SubSetR1(ABC):
         return not self == other
 
 
-class EmptyR1(SubSetR1):
+class Empty(SubSetR1):
     """
-    EmptyR1 class is a singleton that represents an empty set
+    Empty class is a singleton that represents an empty set
 
-    It's equivalent to: EmptyR1 = {}
+    It's equivalent to: Empty = {}
     """
 
     instance = None
@@ -229,7 +229,7 @@ class EmptyR1(SubSetR1):
         return self
 
     def __invert__(self):
-        return WholeR1()
+        return Whole()
 
     def __and__(self, other):
         Future.convert(other)
@@ -249,7 +249,7 @@ class EmptyR1(SubSetR1):
         return r"{}"
 
     def __repr__(self):
-        return "EmptyR1"
+        return "Empty"
 
     def __eq__(self, other):
         return self is Future.convert(other)
@@ -258,11 +258,11 @@ class EmptyR1(SubSetR1):
         return 0
 
 
-class WholeR1(SubSetR1):
+class Whole(SubSetR1):
     """
-    WholeR1 class is a singleton that represents the entire real line
+    Whole class is a singleton that represents the entire real line
 
-    It's equivalent to: WholeR1 = (-inf, +inf)
+    It's equivalent to: Whole = (-inf, +inf)
     """
 
     instance = None
@@ -287,7 +287,7 @@ class WholeR1(SubSetR1):
         return self
 
     def __invert__(self):
-        return EmptyR1()
+        return Empty()
 
     def __and__(self, other):
         return Future.convert(other)
@@ -307,7 +307,7 @@ class WholeR1(SubSetR1):
         return "(" + str(NEGINF) + ", " + str(POSINF) + ")"
 
     def __repr__(self):
-        return "WholeR1"
+        return "Whole"
 
     def __eq__(self, other):
         return self is Future.convert(other)

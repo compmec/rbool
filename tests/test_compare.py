@@ -1,6 +1,6 @@
 import pytest
 
-from rbool import EmptyR1, IntervalR1, SingleValueR1, WholeR1
+from rbool import Empty, Interval, SingleValue, Whole
 from rbool.numbs import NEGINF, POSINF
 
 
@@ -21,7 +21,7 @@ def test_begin():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_empty():
-    empty = EmptyR1()
+    empty = Empty()
 
     assert empty == empty
     assert empty == {}
@@ -32,7 +32,7 @@ def test_empty():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_whole():
-    whole = WholeR1()
+    whole = Whole()
 
     assert whole == whole
     assert whole == (float("-inf"), float("inf"))
@@ -50,8 +50,8 @@ def test_whole():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_empty", "test_whole"])
 def test_singletons():
-    empty = EmptyR1()
-    whole = WholeR1()
+    empty = Empty()
+    whole = Whole()
 
     assert empty == empty
     assert empty != whole
@@ -68,11 +68,11 @@ def test_singletons():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_singletons"])
 def test_singles():
-    empty = EmptyR1()
-    whole = WholeR1()
+    empty = Empty()
+    whole = Whole()
 
     for value in (-10, 0, 10):
-        single = SingleValueR1(value)
+        single = SingleValue(value)
         assert single == single
         assert single == value
         assert single == {value}
@@ -93,16 +93,16 @@ def test_singles():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_singletons", "test_singles"])
 def test_intervals():
-    empty = EmptyR1()
-    whole = WholeR1()
+    empty = Empty()
+    whole = Whole()
 
     aval, bval = -10, 10
 
-    n2a = IntervalR1(NEGINF, aval)
-    n2b = IntervalR1(NEGINF, bval)
-    a2b = IntervalR1(aval, bval)
-    a2p = IntervalR1(aval, POSINF)
-    b2p = IntervalR1(bval, POSINF)
+    n2a = Interval(NEGINF, aval)
+    n2b = Interval(NEGINF, bval)
+    a2b = Interval(aval, bval)
+    a2p = Interval(aval, POSINF)
+    b2p = Interval(bval, POSINF)
 
     intervals = (n2a, n2b, a2b, a2p, b2p)
     for i, intvi in enumerate(intervals):
@@ -135,7 +135,7 @@ def test_intervals():
         (20, POSINF),
     ]
     for sta, end in closed_pairs:
-        interv = IntervalR1(sta, end, True, True)
+        interv = Interval(sta, end, True, True)
         assert interv == [sta, end]
         assert [sta, end] == interv
 
@@ -151,7 +151,7 @@ def test_intervals():
         (20, POSINF),
     ]
     for sta, end in open_pairs:
-        interv = IntervalR1(sta, end, False, False)
+        interv = Interval(sta, end, False, False)
         assert interv == (sta, end)
         assert (sta, end) == interv
 

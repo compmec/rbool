@@ -1,14 +1,6 @@
 import pytest
 
-from rbool import (
-    EmptyR1,
-    IntervalR1,
-    SingleValueR1,
-    WholeR1,
-    bigger,
-    from_any,
-    lower,
-)
+from rbool import Empty, Interval, SingleValue, Whole, bigger, from_any, lower
 
 
 @pytest.mark.order(16)
@@ -32,8 +24,8 @@ class TestInversion:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_singletion(self):
-        empty = EmptyR1()
-        whole = WholeR1()
+        empty = Empty()
+        whole = Whole()
 
         assert ~empty == whole
         assert ~whole == empty
@@ -42,9 +34,9 @@ class TestInversion:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_single(self):
-        assert ~SingleValueR1(0) == "(-inf, 0) U (0, inf)"
-        assert ~SingleValueR1(-10) == "(-inf, -10) U (-10, inf)"
-        assert ~SingleValueR1(+10) == "(-inf, 10) U (10, inf)"
+        assert ~SingleValue(0) == "(-inf, 0) U (0, inf)"
+        assert ~SingleValue(-10) == "(-inf, -10) U (-10, inf)"
+        assert ~SingleValue(+10) == "(-inf, 10) U (10, inf)"
 
     @pytest.mark.order(16)
     @pytest.mark.timeout(1)
@@ -91,8 +83,8 @@ class TestAndOr:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_singleton(self):
-        empty = EmptyR1()
-        whole = WholeR1()
+        empty = Empty()
+        whole = Whole()
 
         assert empty & empty == empty
         assert whole & empty == empty
@@ -118,11 +110,11 @@ class TestAndOr:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_single_singleton(self):
-        empty = EmptyR1()
-        whole = WholeR1()
+        empty = Empty()
+        whole = Whole()
 
         for value in (-10, 0, 10):
-            single = SingleValueR1(value)
+            single = SingleValue(value)
             assert single & empty == empty
             assert single & whole == single
             assert empty & single == empty
@@ -158,10 +150,10 @@ class TestAndOr:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_single_single(self):
-        empty = EmptyR1()
+        empty = Empty()
 
         values = (-10, 0, 10)
-        singles = tuple(map(SingleValueR1, values))
+        singles = tuple(map(SingleValue, values))
         for i, (vali, singi) in enumerate(zip(values, singles)):
             for j, (valj, singj) in enumerate(zip(values, singles)):
                 if i == j:
@@ -201,7 +193,7 @@ class TestAndOr:
     def test_interval_contains_disjoint(self):
         string = "{-30, -25} U [-20, 20] U {25, 30, 40}"
         disjoint = from_any(string)
-        assert disjoint in IntervalR1(-50, 50)
+        assert disjoint in Interval(-50, 50)
 
     @pytest.mark.order(16)
     @pytest.mark.timeout(1)

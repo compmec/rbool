@@ -1,14 +1,6 @@
 import pytest
 
-from rbool import (
-    EmptyR1,
-    IntervalR1,
-    SingleValueR1,
-    WholeR1,
-    from_any,
-    move,
-    scale,
-)
+from rbool import Empty, Interval, SingleValue, Whole, from_any, move, scale
 
 
 @pytest.mark.order(17)
@@ -32,7 +24,7 @@ class TestShift:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_empty(self):
-        empty = EmptyR1()
+        empty = Empty()
         assert empty.move(-1) == empty
         assert empty.move(0) == empty
         assert empty.move(1) == empty
@@ -45,7 +37,7 @@ class TestShift:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_whole(self):
-        whole = WholeR1()
+        whole = Whole()
         assert whole.move(-1) == whole
         assert whole.move(0) == whole
         assert whole.move(1) == whole
@@ -62,10 +54,10 @@ class TestShift:
         amounts = [-20, -10, 0, 10, 20]
 
         for value in values:
-            single = SingleValueR1(value)
+            single = SingleValue(value)
             for amount in amounts:
                 test = single.move(amount)
-                good = SingleValueR1(value + amount)
+                good = SingleValue(value + amount)
                 assert test == good
 
             with pytest.raises(ValueError):
@@ -77,9 +69,9 @@ class TestShift:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_interval(self):
-        base = IntervalR1(-10, 10)
+        base = Interval(-10, 10)
         test = base.move(-5)
-        good = IntervalR1(-15, 5)
+        good = Interval(-15, 5)
         assert test == good
 
     @pytest.mark.order(17)
@@ -112,7 +104,7 @@ class TestScale:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_empty(self):
-        empty = EmptyR1()
+        empty = Empty()
         assert empty.scale(-1) == empty
         assert empty.scale(1) == empty
 
@@ -123,7 +115,7 @@ class TestScale:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_whole(self):
-        whole = WholeR1()
+        whole = Whole()
         assert whole.scale(-1) == whole
         assert whole.scale(1) == whole
 
@@ -138,10 +130,10 @@ class TestScale:
         amounts = [-20, -10, 10, 20]
 
         for value in values:
-            single = SingleValueR1(value)
+            single = SingleValue(value)
             for amount in amounts:
                 test = single.scale(amount)
-                good = SingleValueR1(value * amount)
+                good = SingleValue(value * amount)
                 assert test == good
 
             with pytest.raises(ValueError):
@@ -155,15 +147,15 @@ class TestScale:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_interval(self):
-        base = IntervalR1(-10, 10)
+        base = Interval(-10, 10)
         assert base.scale(1) == base
-        assert base.scale(2) == IntervalR1(-20, 20)
+        assert base.scale(2) == Interval(-20, 20)
         assert base.scale(-1) == base  # symmetry
 
-        base = IntervalR1(0, 10)
+        base = Interval(0, 10)
         assert base.scale(1) == base
-        assert base.scale(2) == IntervalR1(0, 20)
-        assert base.scale(-1) == IntervalR1(-10, 0)
+        assert base.scale(2) == Interval(0, 20)
+        assert base.scale(-1) == Interval(-10, 0)
 
         base = from_any("[-10, 5)")
         assert base.scale(1) == base

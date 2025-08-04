@@ -7,12 +7,12 @@ from __future__ import annotations
 from numbers import Real
 from typing import Iterable, List, Set, Tuple, Union
 
-from .base import EmptyR1, Future, SubSetR1
+from .base import Empty, Future, SubSetR1
 from .error import NotExpectedError
 from .numbs import NEGINF, POSINF, Is, To
 
 
-def lower(number: Real, closed: bool = True) -> IntervalR1:
+def lower(number: Real, closed: bool = True) -> Interval:
     """
     Gives the interval such points are lower than given number
 
@@ -25,8 +25,8 @@ def lower(number: Real, closed: bool = True) -> IntervalR1:
 
     Return
     ------
-    IntervalR1
-        The IntervalR1 such is lower than the given `number`
+    Interval
+        The Interval such is lower than the given `number`
 
     Example
     -------
@@ -37,10 +37,10 @@ def lower(number: Real, closed: bool = True) -> IntervalR1:
     >>> lower(10, True)
     (-inf, 10]
     """
-    return IntervalR1(NEGINF, To.finite(number), False, closed)
+    return Interval(NEGINF, To.finite(number), False, closed)
 
 
-def bigger(finite: Real, closed: bool = True) -> IntervalR1:
+def bigger(finite: Real, closed: bool = True) -> Interval:
     """
     Gives the interval such points are bigger than given number
 
@@ -53,8 +53,8 @@ def bigger(finite: Real, closed: bool = True) -> IntervalR1:
 
     Return
     ------
-    IntervalR1
-        The IntervalR1 such is bigger than the given `number`
+    Interval
+        The Interval such is bigger than the given `number`
 
     Example
     -------
@@ -65,12 +65,12 @@ def bigger(finite: Real, closed: bool = True) -> IntervalR1:
     >>> bigger(10, True)
     [10, +inf)
     """
-    return IntervalR1(finite, POSINF, closed, False)
+    return Interval(finite, POSINF, closed, False)
 
 
-class SingleValueR1(SubSetR1):
+class SingleValue(SubSetR1):
     """
-    SingleValueR1 stores only one value, being a subset of the real line
+    SingleValue stores only one value, being a subset of the real line
 
     Only finite values are acceptable
     """
@@ -81,7 +81,7 @@ class SingleValueR1(SubSetR1):
     @property
     def internal(self) -> Real:
         """
-        Gives the internal real value of the SingleValueR1
+        Gives the internal real value of the SingleValue
 
         :getter: Returns the internal value of the SubSetR1
         :type: Real
@@ -92,13 +92,13 @@ class SingleValueR1(SubSetR1):
         return "{" + str(self.__internal) + "}"
 
     def __repr__(self):
-        return f"SingleValueR1({self.__internal})"
+        return f"SingleValue({self.__internal})"
 
     def __contains__(self, other):
         if Is.infinity(other):
             return False
         other = Future.convert(other)
-        return isinstance(other, EmptyR1) or self == other
+        return isinstance(other, Empty) or self == other
 
     def __eq__(self, other):
         other = Future.convert(other)
@@ -108,7 +108,7 @@ class SingleValueR1(SubSetR1):
         )
 
     def __invert__(self):
-        return DisjointR1(
+        return Disjoint(
             [
                 lower(self.internal, False),
                 bigger(self.internal, False),
@@ -117,15 +117,15 @@ class SingleValueR1(SubSetR1):
 
     def __and__(self, other: SubSetR1):
         other = Future.convert(other)
-        return self if other.__contains__(self) else EmptyR1()
+        return self if other.__contains__(self) else Empty()
 
     def __hash__(self):
         return hash(self.internal)
 
 
-class IntervalR1(SubSetR1):
+class Interval(SubSetR1):
     """
-    IntervalR1 stores a continuous set of points on R1
+    Interval stores a continuous set of points on R1
 
 
     """
@@ -140,7 +140,7 @@ class IntervalR1(SubSetR1):
                 "Received interval [{start}, {end}], but {end} <= {start}"
             )
         if Is.infinity(start) and Is.infinity(end):
-            raise ValueError("Received interval (-inf, +inf), use WholeR1")
+            raise ValueError("Received interval (-inf, +inf), use Whole")
         if start == NEGINF:
             left = False
         if end == POSINF:
@@ -155,14 +155,14 @@ class IntervalR1(SubSetR1):
         if Is.infinity(other):
             return other in (self[0], self[1])
         other = Future.convert(other)
-        if isinstance(other, SingleValueR1):
+        if isinstance(other, SingleValue):
             other = other.internal
             if other < self[0] or self[1] < other:
                 return False
             if self[0] < other < self[1]:
                 return True
             return self.closed_left if self[0] == other else self.closed_right
-        if isinstance(other, IntervalR1):
+        if isinstance(other, Interval):
             if other[0] < self[0] or self[1] < other[1]:
                 return False
             if self[0] < other[0] and other[1] < self[1]:
@@ -174,16 +174,16 @@ class IntervalR1(SubSetR1):
             ):
                 return False
             return True
-        if isinstance(other, DisjointR1):
+        if isinstance(other, Disjoint):
             return all(map(self.__contains__, other))
-        return isinstance(other, EmptyR1)
+        return isinstance(other, Empty)
 
     def __invert__(self):
         if self[0] == NEGINF:
             return bigger(self[1], not self.closed_right)
         if self[1] == POSINF:
             return lower(self[0], not self.closed_left)
-        return DisjointR1(
+        return Disjoint(
             [
                 lower(self[0], not self.closed_left),
                 bigger(self[1], not self.closed_right),
@@ -196,7 +196,7 @@ class IntervalR1(SubSetR1):
     def __eq__(self, other):
         other = Future.convert(other)
         return (
-            isinstance(other, IntervalR1)
+            isinstance(other, Interval)
             and self[0] == other[0]
             and self[1] == other[1]
             and self.closed_left == other.closed_left
@@ -233,28 +233,28 @@ class IntervalR1(SubSetR1):
         return hash((self[0], self[1]))
 
 
-class DisjointR1(SubSetR1):
+class Disjoint(SubSetR1):
     """
-    Stores the union of SingleValueR1 and IntervalR1 which are not connected
+    Stores the union of SingleValue and Interval which are not connected
 
     The direct constructor should not be used.
     This object should be constructed by the standard boolean operations
-    of the some SingleValueR1 and IntervalR1
+    of the some SingleValue and Interval
     """
 
-    def __init__(self, items: Iterable[Union[SingleValueR1, IntervalR1]]):
+    def __init__(self, items: Iterable[Union[SingleValue, Interval]]):
         items = tuple(items)
         if len(items) < 2:
             raise ValueError("Less than 2 items!")
 
         knots: Set[Real] = set()
-        singles: List[SingleValueR1] = []
-        intervs: List[IntervalR1] = []
+        singles: List[SingleValue] = []
+        intervs: List[Interval] = []
         for item in items:
-            if isinstance(item, SingleValueR1):
+            if isinstance(item, SingleValue):
                 singles.append(item)
                 knots.add(item.internal)
-            elif isinstance(item, IntervalR1):
+            elif isinstance(item, Interval):
                 intervs.append(item)
                 if isinstance(item[0], Real):
                     knots.add(item[0])
@@ -273,22 +273,22 @@ class DisjointR1(SubSetR1):
         )
 
     @property
-    def singles(self) -> Tuple[SingleValueR1, ...]:
+    def singles(self) -> Tuple[SingleValue, ...]:
         """
-        Gives all the isolated nodes that are inside the DisjointR1
+        Gives all the isolated nodes that are inside the Disjoint
 
         :getter: Returns all the isolated points
-        :type: Tuple[SingleValueR1, ...]
+        :type: Tuple[SingleValue, ...]
         """
         return self.__singles
 
     @property
-    def intervals(self) -> Tuple[IntervalR1, ...]:
+    def intervals(self) -> Tuple[Interval, ...]:
         """
-        Gives all the non-connected intervals that are inside the DisjointR1
+        Gives all the non-connected intervals that are inside the Disjoint
 
         :getter: Returns all the non-connected intervals
-        :type: Tuple[SingleValueR1, ...]
+        :type: Tuple[SingleValue, ...]
         """
         return self.__intervs
 
@@ -300,7 +300,7 @@ class DisjointR1(SubSetR1):
         if Is.infinity(other):
             return any(other in sub for sub in self)
         other = Future.convert(other)
-        if isinstance(other, DisjointR1):
+        if isinstance(other, Disjoint):
             return all(sub in self for sub in other)
         return any(other in sub for sub in self)
 
@@ -372,7 +372,7 @@ class DisjointR1(SubSetR1):
 
     def __eq__(self, other):
         other = Future.convert(other)
-        if not isinstance(other, DisjointR1):
+        if not isinstance(other, Disjoint):
             return False
         if len(self.singles) != len(other.singles) or len(
             self.intervals

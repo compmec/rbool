@@ -1,14 +1,6 @@
 import pytest
 
-from rbool import (
-    DisjointR1,
-    EmptyR1,
-    IntervalR1,
-    SingleValueR1,
-    WholeR1,
-    bigger,
-    lower,
-)
+from rbool import Disjoint, Empty, Interval, SingleValue, Whole, bigger, lower
 
 
 @pytest.mark.order(14)
@@ -28,51 +20,51 @@ def test_begin():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_empty():
-    empty = EmptyR1()
+    empty = Empty()
     assert str(empty) == r"{}"
-    assert repr(empty) == r"EmptyR1"
+    assert repr(empty) == r"Empty"
 
 
 @pytest.mark.order(14)
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_whole():
-    whole = WholeR1()
+    whole = Whole()
     assert str(whole) == r"(-inf, inf)"
-    assert repr(whole) == r"WholeR1"
+    assert repr(whole) == r"Whole"
 
 
 @pytest.mark.order(14)
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_single():
-    value = SingleValueR1(-10)
+    value = SingleValue(-10)
     assert str(value) == r"{-10}"
-    assert repr(value) == r"SingleValueR1(-10)"
+    assert repr(value) == r"SingleValue(-10)"
 
-    value = SingleValueR1(0)
+    value = SingleValue(0)
     assert str(value) == r"{0}"
-    assert repr(value) == r"SingleValueR1(0)"
+    assert repr(value) == r"SingleValue(0)"
 
-    value = SingleValueR1(10)
+    value = SingleValue(10)
     assert str(value) == r"{10}"
-    assert repr(value) == r"SingleValueR1(10)"
+    assert repr(value) == r"SingleValue(10)"
 
 
 @pytest.mark.order(14)
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_interval():
-    interval = IntervalR1(-10, 10, True, True)
+    interval = Interval(-10, 10, True, True)
     assert str(interval) == r"[-10, 10]"
 
-    interval = IntervalR1(-10, 10, True, False)
+    interval = Interval(-10, 10, True, False)
     assert str(interval) == r"[-10, 10)"
 
-    interval = IntervalR1(-10, 10, False, True)
+    interval = Interval(-10, 10, False, True)
     assert str(interval) == r"(-10, 10]"
 
-    interval = IntervalR1(-10, 10, False, False)
+    interval = Interval(-10, 10, False, False)
     assert str(interval) == r"(-10, 10)"
 
     interval = lower(10, True)
@@ -94,13 +86,13 @@ def test_interval():
 def test_disjoint():
     interv0 = lower(-50)
     interv1 = bigger(50)
-    disjoint = DisjointR1([interv0, interv1])
+    disjoint = Disjoint([interv0, interv1])
     assert str(disjoint) == "(-inf, -50] U [50, inf)"
     repr(disjoint)
 
-    interv2 = IntervalR1(-20, 20)
-    singles = list(map(SingleValueR1, [-30, -25, 25, 30, 40]))
-    disjoint = DisjointR1([interv0, interv1, interv2] + singles)
+    interv2 = Interval(-20, 20)
+    singles = list(map(SingleValue, [-30, -25, 25, 30, 40]))
+    disjoint = Disjoint([interv0, interv1, interv2] + singles)
     blocks = [
         "(-inf, -50]",
         "{-30, -25}",
@@ -111,12 +103,12 @@ def test_disjoint():
     assert str(disjoint) == " U ".join(blocks)
     repr(disjoint)
 
-    disjoint = DisjointR1([interv0, interv2] + singles)
+    disjoint = Disjoint([interv0, interv2] + singles)
     blocks = ["(-inf, -50]", "{-30, -25}", "[-20, 20]", "{25, 30, 40}"]
     assert str(disjoint) == " U ".join(blocks)
     repr(disjoint)
 
-    disjoint = DisjointR1(singles)
+    disjoint = Disjoint(singles)
     assert str(disjoint) == "{-30, -25, 25, 30, 40}"
     repr(disjoint)
 
