@@ -5,10 +5,10 @@ Contains some functions to compute the limits of the given subsets
 from numbers import Real
 from typing import Union
 
-from .base import EmptyR1, Future, SubSetR1, WholeR1
+from .base import Empty, Future, SubSetR1, Whole
 from .error import NotExpectedError
 from .numbs import NEGINF, POSINF, Is
-from .singles import DisjointR1, IntervalR1, SingleValueR1
+from .singles import Disjoint, Interval, SingleValue
 
 
 def infimum(subset: SubSetR1) -> Union[Real, None]:
@@ -23,33 +23,33 @@ def infimum(subset: SubSetR1) -> Union[Real, None]:
     Return
     ------
     Real | None
-        The infimum value, or None if receives EmptyR1
+        The infimum value, or None if receives Empty
 
     Example
     -------
-    >>> infimum("{}")  # EmptyR1
+    >>> infimum("{}")  # Empty
     None
-    >>> infimum("(-inf, +inf)")  # WholeR1
+    >>> infimum("(-inf, +inf)")  # Whole
     -inf
-    >>> infimum("{-10}")  # SingleValueR1
+    >>> infimum("{-10}")  # SingleValue
     -10
-    >>> infimum("[-10, 10]")  # IntervalR1
+    >>> infimum("[-10, 10]")  # Interval
     -10
-    >>> infimum("(-10, 10)")  # IntervalR1
+    >>> infimum("(-10, 10)")  # Interval
     -10
-    >>> infimum("{0, 10, 20}")  # DisjointR1
+    >>> infimum("{0, 10, 20}")  # Disjoint
     0
     """
     subset = Future.convert(subset)
-    if isinstance(subset, EmptyR1):
+    if isinstance(subset, Empty):
         return None
-    if isinstance(subset, WholeR1):
+    if isinstance(subset, Whole):
         return NEGINF
-    if isinstance(subset, SingleValueR1):
+    if isinstance(subset, SingleValue):
         return subset.internal
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, Interval):
         return subset[0]
-    if isinstance(subset, DisjointR1):
+    if isinstance(subset, Disjoint):
         return min(map(infimum, subset))
     raise NotExpectedError(f"Received {type(subset)}: {subset}")
 
@@ -70,31 +70,31 @@ def minimum(subset: SubSetR1) -> Union[Real, None]:
 
     Example
     -------
-    >>> minimum("{}")  # EmptyR1
+    >>> minimum("{}")  # Empty
     None
-    >>> minimum("(-inf, +inf)")  # WholeR1
+    >>> minimum("(-inf, +inf)")  # Whole
     None
-    >>> minimum("{-10}")  # SingleValueR1
+    >>> minimum("{-10}")  # SingleValue
     -10
-    >>> minimum("[-10, 10]")  # IntervalR1
+    >>> minimum("[-10, 10]")  # Interval
     -10
-    >>> minimum("(-10, 10)")  # IntervalR1
+    >>> minimum("(-10, 10)")  # Interval
     None
-    >>> minimum("{0, 10, 20}")  # DisjointR1
+    >>> minimum("{0, 10, 20}")  # Disjoint
     0
     """
     subset = Future.convert(subset)
-    if isinstance(subset, (EmptyR1, WholeR1)):
+    if isinstance(subset, (Empty, Whole)):
         return None
-    if isinstance(subset, SingleValueR1):
+    if isinstance(subset, SingleValue):
         return subset.internal
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, Interval):
         return (
             subset[0]
             if (Is.finite(subset[0]) and subset.closed_left)
             else None
         )
-    if isinstance(subset, DisjointR1):
+    if isinstance(subset, Disjoint):
         infval = POSINF
         global_minval = POSINF
         for sub in subset:
@@ -122,31 +122,31 @@ def maximum(subset: SubSetR1) -> Union[Real, None]:
 
     Example
     -------
-    >>> maximum("{}")  # EmptyR1
+    >>> maximum("{}")  # Empty
     None
-    >>> maximum("(-inf, +inf)")  # WholeR1
+    >>> maximum("(-inf, +inf)")  # Whole
     None
-    >>> maximum("{-10}")  # SingleValueR1
+    >>> maximum("{-10}")  # SingleValue
     -10
-    >>> maximum("[-10, 10]")  # IntervalR1
+    >>> maximum("[-10, 10]")  # Interval
     10
-    >>> maximum("(-10, 10)")  # IntervalR1
+    >>> maximum("(-10, 10)")  # Interval
     None
-    >>> maximum("{0, 10, 20}")  # DisjointR1
+    >>> maximum("{0, 10, 20}")  # Disjoint
     20
     """
     subset = Future.convert(subset)
-    if isinstance(subset, (EmptyR1, WholeR1)):
+    if isinstance(subset, (Empty, Whole)):
         return None
-    if isinstance(subset, SingleValueR1):
+    if isinstance(subset, SingleValue):
         return subset.internal
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, Interval):
         return (
             subset[1]
             if (Is.finite(subset[1]) and subset.closed_right)
             else None
         )
-    if isinstance(subset, DisjointR1):
+    if isinstance(subset, Disjoint):
         supval = NEGINF
         global_maxval = NEGINF
         for sub in subset:
@@ -170,32 +170,32 @@ def supremum(subset: SubSetR1) -> Union[Real, None]:
     Return
     ------
     Real | None
-        The supremum value, or None if receives EmptyR1
+        The supremum value, or None if receives Empty
 
     Example
     -------
-    >>> supremum("{}")  # EmptyR1
+    >>> supremum("{}")  # Empty
     None
-    >>> supremum("(-inf, +inf)")  # WholeR1
+    >>> supremum("(-inf, +inf)")  # Whole
     +inf
-    >>> supremum("{-10}")  # SingleValueR1
+    >>> supremum("{-10}")  # SingleValue
     -10
-    >>> supremum("[-10, 10]")  # IntervalR1
+    >>> supremum("[-10, 10]")  # Interval
     10
-    >>> supremum("(-10, 10)")  # IntervalR1
+    >>> supremum("(-10, 10)")  # Interval
     10
-    >>> supremum("{0, 10, 20}")  # DisjointR1
+    >>> supremum("{0, 10, 20}")  # Disjoint
     20
     """
     subset = Future.convert(subset)
-    if isinstance(subset, EmptyR1):
+    if isinstance(subset, Empty):
         return None
-    if isinstance(subset, WholeR1):
+    if isinstance(subset, Whole):
         return POSINF
-    if isinstance(subset, SingleValueR1):
+    if isinstance(subset, SingleValue):
         return subset.internal
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, Interval):
         return subset[1]
-    if isinstance(subset, DisjointR1):
+    if isinstance(subset, Disjoint):
         return max(map(supremum, subset))
     raise NotExpectedError(f"Received {type(subset)}: {subset}")

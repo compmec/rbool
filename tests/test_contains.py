@@ -1,11 +1,11 @@
 import pytest
 
 from rbool import (
-    DisjointR1,
-    EmptyR1,
-    IntervalR1,
-    SingleValueR1,
-    WholeR1,
+    Disjoint,
+    Empty,
+    Interval,
+    SingleValue,
+    Whole,
     bigger,
     contains,
     from_any,
@@ -32,8 +32,8 @@ def test_begin():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_singleton_in_singleton():
-    empty = EmptyR1()
-    whole = WholeR1()
+    empty = Empty()
+    whole = Whole()
 
     assert empty in empty
     assert empty in whole
@@ -51,11 +51,11 @@ def test_singleton_in_singleton():
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_singleton_contains_object():
-    empty = EmptyR1()
-    whole = WholeR1()
+    empty = Empty()
+    whole = Whole()
 
     values = (-100, -50, -20, -10, 0, 10, 20, 50, 100)
-    singls = tuple(map(SingleValueR1, values))
+    singls = tuple(map(SingleValue, values))
     for value in values:
         assert value not in empty
         assert value in whole
@@ -67,11 +67,11 @@ def test_singleton_contains_object():
 
     aval, bval = -10, 10
 
-    n2a = IntervalR1(NEGINF, aval)
-    n2b = IntervalR1(NEGINF, bval)
-    a2b = IntervalR1(aval, bval)
-    a2p = IntervalR1(aval, POSINF)
-    b2p = IntervalR1(bval, POSINF)
+    n2a = Interval(NEGINF, aval)
+    n2b = Interval(NEGINF, bval)
+    a2b = Interval(aval, bval)
+    a2p = Interval(aval, POSINF)
+    b2p = Interval(bval, POSINF)
     intervals = (n2a, n2b, a2b, a2p, b2p)
     for interval in intervals:
         assert empty in interval
@@ -87,11 +87,11 @@ def test_interval_contains_interval():
 
     aval, bval = -10, 10
 
-    n2a = IntervalR1(NEGINF, aval)
-    n2b = IntervalR1(NEGINF, bval)
-    a2b = IntervalR1(aval, bval)
-    a2p = IntervalR1(aval, POSINF)
-    b2p = IntervalR1(bval, POSINF)
+    n2a = Interval(NEGINF, aval)
+    n2b = Interval(NEGINF, bval)
+    a2b = Interval(aval, bval)
+    a2p = Interval(aval, POSINF)
+    b2p = Interval(bval, POSINF)
 
     assert n2a in n2a
     assert n2a in n2b
@@ -123,15 +123,11 @@ def test_interval_contains_interval():
     assert b2p in a2p
     assert b2p in b2p
 
-    assert IntervalR1(-50, -20) not in IntervalR1(0, 20)
-    assert IntervalR1(10, 50) not in IntervalR1(0, 20)
-    assert IntervalR1(-10, 10) in IntervalR1(-20, 20)
-    assert IntervalR1(-10, 10, True, True) not in IntervalR1(
-        -20, 10, True, False
-    )
-    assert IntervalR1(-10, 10, True, True) not in IntervalR1(
-        -10, 20, False, True
-    )
+    assert Interval(-50, -20) not in Interval(0, 20)
+    assert Interval(10, 50) not in Interval(0, 20)
+    assert Interval(-10, 10) in Interval(-20, 20)
+    assert Interval(-10, 10, True, True) not in Interval(-20, 10, True, False)
+    assert Interval(-10, 10, True, True) not in Interval(-10, 20, False, True)
 
 
 @pytest.mark.order(15)
@@ -148,7 +144,7 @@ def test_disjoint_contains_object():
     ]
     string = " U ".join(blocks)
     disjoint = from_any(string)
-    assert isinstance(disjoint, DisjointR1)
+    assert isinstance(disjoint, Disjoint)
 
     inside = {-25, -10, -7, -5, 0, 2, 12, 15, 22, 30, 31, 33}
     outside = {-20, -15, -2, 5, 7, 10, 17, 20, 25, 28, 32}
@@ -161,31 +157,31 @@ def test_disjoint_contains_object():
     assert disjoint != {30, 31}
     assert disjoint != [-10, -5]
     assert disjoint != {30}
-    assert disjoint != EmptyR1()
-    assert disjoint != WholeR1()
+    assert disjoint != Empty()
+    assert disjoint != Whole()
 
     assert {30, 31} in disjoint
     assert [-10, -5] in disjoint
     assert {30} in disjoint
-    assert EmptyR1() in disjoint
-    assert WholeR1() not in disjoint
+    assert Empty() in disjoint
+    assert Whole() not in disjoint
 
 
 @pytest.mark.order(15)
 @pytest.mark.timeout(1)
 @pytest.mark.dependency(depends=["test_begin"])
 def test_infinity():
-    empty = EmptyR1()
+    empty = Empty()
     assert NEGINF not in empty
     assert POSINF not in empty
 
-    whole = WholeR1()
+    whole = Whole()
     assert NEGINF in whole
     assert POSINF in whole
 
     for value in (-10, -1, 0, 1, 10):
-        assert NEGINF not in SingleValueR1(value)
-        assert POSINF not in SingleValueR1(value)
+        assert NEGINF not in SingleValue(value)
+        assert POSINF not in SingleValue(value)
 
     interval = lower(0)
     assert NEGINF in interval
@@ -195,7 +191,7 @@ def test_infinity():
     assert NEGINF not in interval
     assert POSINF in interval
 
-    interval = IntervalR1(-10, 10)
+    interval = Interval(-10, 10)
     assert NEGINF not in interval
     assert POSINF not in interval
 
@@ -209,7 +205,7 @@ def test_infinity():
     ]
     string = " U ".join(blocks)
     disjoint = from_any(string)
-    assert isinstance(disjoint, DisjointR1)
+    assert isinstance(disjoint, Disjoint)
 
     assert NEGINF in disjoint
     assert POSINF not in disjoint

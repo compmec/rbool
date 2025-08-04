@@ -1,4 +1,4 @@
-.. autoclass:: rbool.base.EmptyR1
+.. autoclass:: rbool.base.Empty
     :members:
     :inherited-members:
     :undoc-members:
@@ -6,7 +6,7 @@
 
 ----------------------------------------------------
 
-.. autoclass:: rbool.base.WholeR1
+.. autoclass:: rbool.base.Whole
     :members:
     :inherited-members:
     :undoc-members:
@@ -14,7 +14,7 @@
 
 ----------------------------------------------------
 
-.. autoclass:: rbool.singles.SingleValueR1
+.. autoclass:: rbool.singles.SingleValue
     :members:
     :inherited-members:
     :undoc-members:
@@ -22,7 +22,7 @@
 
 ----------------------------------------------------
 
-.. autoclass:: rbool.singles.IntervalR1
+.. autoclass:: rbool.singles.Interval
     :members:
     :inherited-members:
     :undoc-members:
@@ -30,7 +30,7 @@
 
 ----------------------------------------------------
 
-.. autoclass:: rbool.singles.DisjointR1
+.. autoclass:: rbool.singles.Disjoint
     :members:
     :inherited-members:
     :undoc-members:

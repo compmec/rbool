@@ -1,14 +1,6 @@
 import pytest
 
-from rbool import (
-    EmptyR1,
-    IntervalR1,
-    SingleValueR1,
-    WholeR1,
-    bigger,
-    from_any,
-    lower,
-)
+from rbool import Empty, Interval, SingleValue, Whole, bigger, from_any, lower
 
 
 @pytest.mark.order(13)
@@ -29,31 +21,31 @@ class TestFromString:
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_empty(self):
-        assert from_any("{}") == EmptyR1()
+        assert from_any("{}") == Empty()
 
     @pytest.mark.order(13)
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_whole(self):
-        assert from_any("(-inf, inf)") == WholeR1()
+        assert from_any("(-inf, inf)") == Whole()
 
     @pytest.mark.order(13)
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_single(self):
-        assert from_any(r"{-10}") == SingleValueR1(-10)
-        assert from_any(r"{0}") == SingleValueR1(0)
-        assert from_any(r"{10}") == SingleValueR1(10)
-        assert from_any(r"{+10}") == SingleValueR1(10)
+        assert from_any(r"{-10}") == SingleValue(-10)
+        assert from_any(r"{0}") == SingleValue(0)
+        assert from_any(r"{10}") == SingleValue(10)
+        assert from_any(r"{+10}") == SingleValue(10)
 
     @pytest.mark.order(13)
     @pytest.mark.timeout(1)
     @pytest.mark.dependency(depends=["test_begin"])
     def test_interval(self):
-        assert from_any(r"[-10, 10]") == IntervalR1(-10, 10, True, True)
-        assert from_any(r"[-10, 10)") == IntervalR1(-10, 10, True, False)
-        assert from_any(r"(-10, 10]") == IntervalR1(-10, 10, False, True)
-        assert from_any(r"(-10, 10)") == IntervalR1(-10, 10, False, False)
+        assert from_any(r"[-10, 10]") == Interval(-10, 10, True, True)
+        assert from_any(r"[-10, 10)") == Interval(-10, 10, True, False)
+        assert from_any(r"(-10, 10]") == Interval(-10, 10, False, True)
+        assert from_any(r"(-10, 10)") == Interval(-10, 10, False, False)
 
         assert from_any(r"(-inf, 10]") == lower(10, True)
         assert from_any(r"(-inf, 10)") == lower(10, False)

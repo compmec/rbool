@@ -5,10 +5,10 @@ like translating, scaling and rotating the SubSetR2 instances on the plane
 
 from numbers import Real
 
-from .base import EmptyR1, Future, SubSetR1, WholeR1
+from .base import Empty, Future, SubSetR1, Whole
 from .error import NotExpectedError
 from .numbs import To
-from .singles import DisjointR1, IntervalR1, SingleValueR1
+from .singles import Disjoint, Interval, SingleValue
 
 
 def move(subset: SubSetR1, amount: Real) -> SubSetR1:
@@ -29,20 +29,20 @@ def move(subset: SubSetR1, amount: Real) -> SubSetR1:
     """
     subset = Future.convert(subset)
     amount = To.finite(amount)
-    if isinstance(subset, (EmptyR1, WholeR1)):
+    if isinstance(subset, (Empty, Whole)):
         return subset
-    if isinstance(subset, SingleValueR1):
-        return SingleValueR1(subset.internal + amount)
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, SingleValue):
+        return SingleValue(subset.internal + amount)
+    if isinstance(subset, Interval):
         newlef = subset[0] + amount
         newrig = subset[1] + amount
-        return IntervalR1(
+        return Interval(
             newlef, newrig, subset.closed_left, subset.closed_right
         )
-    if isinstance(subset, DisjointR1):
+    if isinstance(subset, Disjoint):
         amount = To.finite(amount)
         newiterable = (move(sub, amount) for sub in subset)
-        return DisjointR1(newiterable)
+        return Disjoint(newiterable)
     raise NotExpectedError(f"Missing typo? {type(subset)}")
 
 
@@ -72,11 +72,11 @@ def scale(subset: SubSetR1, amount: Real) -> SubSetR1:
     amount = To.finite(amount)
     if amount == 0:
         raise ValueError
-    if isinstance(subset, (EmptyR1, WholeR1)):
+    if isinstance(subset, (Empty, Whole)):
         return subset
-    if isinstance(subset, SingleValueR1):
-        return SingleValueR1(subset.internal * amount)
-    if isinstance(subset, IntervalR1):
+    if isinstance(subset, SingleValue):
+        return SingleValue(subset.internal * amount)
+    if isinstance(subset, Interval):
         newlef = subset[0] * amount
         newrig = subset[1] * amount
         clolef = subset.closed_left
@@ -84,9 +84,9 @@ def scale(subset: SubSetR1, amount: Real) -> SubSetR1:
         if amount < 0:
             newlef, newrig = newrig, newlef
             clolef, clorig = clorig, clolef
-        return IntervalR1(newlef, newrig, clolef, clorig)
-    if isinstance(subset, DisjointR1):
+        return Interval(newlef, newrig, clolef, clorig)
+    if isinstance(subset, Disjoint):
         amount = To.finite(amount)
         newiterable = (scale(sub, amount) for sub in subset)
-        return DisjointR1(newiterable)
+        return Disjoint(newiterable)
     raise NotExpectedError(f"Missing typo? {type(subset)}")

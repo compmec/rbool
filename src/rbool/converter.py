@@ -2,17 +2,17 @@
 Module that contains functions to convert some basic types into Bool1D types
 
 The easier example is from string:
-* "{}" represents a empty set, so returns the EmptyR1 instance
-* "(-inf, +inf)" represents the entire real line, returns WholeR1 instance
+* "{}" represents a empty set, so returns the Empty instance
+* "(-inf, +inf)" represents the entire real line, returns Whole instance
 """
 
 from numbers import Real
 from typing import Any, Dict, List, Set, Tuple
 
-from .base import EmptyR1, Future, SubSetR1, WholeR1
+from .base import Empty, Future, SubSetR1, Whole
 from .error import NotExpectedError
 from .numbs import NEGINF, POSINF, To
-from .singles import IntervalR1, SingleValueR1, bigger, lower
+from .singles import Interval, SingleValue, bigger, lower
 
 
 # pylint: disable=too-many-return-statements
@@ -32,7 +32,7 @@ def from_any(obj: Any) -> SubSetR1:
         return obj
     if isinstance(obj, Real):
         number = To.finite(obj)
-        return SingleValueR1(number)
+        return SingleValue(number)
     if isinstance(obj, str):
         return from_str(obj)
     if isinstance(obj, dict):
@@ -52,35 +52,35 @@ def from_str(string: str) -> SubSetR1:
 
     Example
     -------
-    >>> from_str("{}")  # EmptyR1
+    >>> from_str("{}")  # Empty
     {}
-    >>> from_str("(-inf, +inf)")  # WholeR1
+    >>> from_str("(-inf, +inf)")  # Whole
     (-inf, +inf)
-    >>> from_str("{10}")  # SingleValueR1
+    >>> from_str("{10}")  # SingleValue
     {10}
-    >>> from_str("[-10, 0] U {5, 10}")  # DisjointR1
+    >>> from_str("[-10, 0] U {5, 10}")  # Disjoint
     [-10, 0] U {5, 10}
     """
     string = string.strip()
     if "U" in string:
         return Future.unite(*map(from_str, string.split("U")))
     if string[0] == "{" and string[-1] == "}":
-        result = EmptyR1()
+        result = Empty()
         for substr in string[1:-1].split(","):
             if not substr:  # Empty string
                 continue
             finite = To.finite(substr)
-            result |= SingleValueR1(finite)
+            result |= SingleValue(finite)
         return result
     if string[0] in "([" and string[-1] in ")]":
         stastr, endstr = string[1:-1].split(",")
         start = To.real(stastr)
         end = To.real(endstr)
         if start == NEGINF and end == POSINF:
-            return WholeR1()
+            return Whole()
         left = string[0] == "["
         right = string[-1] == "]"
-        return IntervalR1(start, end, left, right)
+        return Interval(start, end, left, right)
     raise ValueError(f"Cannot parse '{string}' into a SubSetR1 instance")
 
 
@@ -99,11 +99,11 @@ def from_dict(dic: Dict) -> SubSetR1:
     >>> subset
     {}
     >>> type(subset)
-    <class 'EmptyR1'>
+    <class 'Empty'>
     """
     if not isinstance(dic, dict):
         raise TypeError
-    result = EmptyR1()
+    result = Empty()
     if len(dic) != 0:
         raise NotExpectedError
     return result
@@ -122,11 +122,11 @@ def from_set(items: Set[object]) -> SubSetR1:
     >>> subset
     {-10, 5}
     >>> type(subset)
-    <class 'DisjointR1'>
+    <class 'Disjoint'>
     """
     if not isinstance(items, set):
         raise TypeError
-    result = EmptyR1()
+    result = Empty()
     for item in items:
         result |= To.finite(item)
     return result
@@ -136,7 +136,7 @@ def from_tuple(pair: Tuple[object]) -> SubSetR1:
     """
     Converts a tuple of two values into a SubSetR1 instance
 
-    It's the standard open interval, or the WholeR1
+    It's the standard open interval, or the Whole
 
     Example
     -------
@@ -147,11 +147,11 @@ def from_tuple(pair: Tuple[object]) -> SubSetR1:
     >>> subset
     (-10, 10)
     >>> type(subset)
-    <class 'IntervalR1'>
+    <class 'Interval'>
     >>> variable = ("-inf", "inf")
     >>> subset = from_tuple(variable)
     >>> type(subset)
-    <class 'WholeR1'>
+    <class 'Whole'>
     """
     if not isinstance(pair, tuple):
         raise TypeError
@@ -160,19 +160,19 @@ def from_tuple(pair: Tuple[object]) -> SubSetR1:
     sta = To.real(pair[0])
     end = To.real(pair[1])
     if sta == NEGINF and end == POSINF:
-        return WholeR1()
+        return Whole()
     if sta == NEGINF:
         return lower(end, False)
     if end == POSINF:
         return bigger(sta, False)
-    return IntervalR1(sta, end, False, False)
+    return Interval(sta, end, False, False)
 
 
 def from_list(pair: List[object]) -> SubSetR1:
     """
     Converts a list of two values into a SubSetR1 instance
 
-    It's the standard closed interval, or the WholeR1
+    It's the standard closed interval, or the Whole
 
     Example
     -------
@@ -183,13 +183,13 @@ def from_list(pair: List[object]) -> SubSetR1:
     >>> subset
     [-10, 10]
     >>> type(subset)
-    <class 'IntervalR1'>
+    <class 'Interval'>
     >>> variable = ["-inf", "inf"]
     >>> subset = from_list(variable)
     >>> subset
     (-inf, +inf)
     >>> type(subset)
-    <class 'WholeR1'>
+    <class 'Whole'>
     """
     if not isinstance(pair, list):
         raise TypeError
@@ -198,9 +198,9 @@ def from_list(pair: List[object]) -> SubSetR1:
     sta = To.real(pair[0])
     end = To.real(pair[1])
     if sta == NEGINF and end == POSINF:
-        return WholeR1()
+        return Whole()
     if sta == NEGINF:
         return lower(end, True)
     if end == POSINF:
         return bigger(sta, True)
-    return IntervalR1(sta, end, True, True)
+    return Interval(sta, end, True, True)

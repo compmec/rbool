@@ -5,27 +5,27 @@ This file contains functions to perform boolean operation on 1D subsets
 from numbers import Real
 from typing import Callable, Iterable, List, Set, Union
 
-from .base import EmptyR1, Future, SubSetR1, WholeR1
+from .base import Empty, Future, SubSetR1, Whole
 from .numbs import Is
-from .singles import DisjointR1, IntervalR1, SingleValueR1, bigger, lower
+from .singles import Disjoint, Interval, SingleValue, bigger, lower
 
 
 def extract_knots(obj: SubSetR1) -> Iterable[Real]:
     """
     Extract all the knots from the SubSetR1.
 
-    If it's a SingleValueR1, gives the internal value
-    If it's a IntervalR1, gives the extremities
-    If it's a DisjointR1, use recursion
+    If it's a SingleValue, gives the internal value
+    If it's a Interval, gives the extremities
+    If it's a Disjoint, use recursion
     """
-    if isinstance(obj, SingleValueR1):
+    if isinstance(obj, SingleValue):
         yield obj.internal
-    if isinstance(obj, IntervalR1):
+    if isinstance(obj, Interval):
         if Is.finite(obj[0]):
             yield obj[0]
         if Is.finite(obj[1]):
             yield obj[1]
-    if isinstance(obj, DisjointR1):
+    if isinstance(obj, Disjoint):
         for sub in obj:
             yield from extract_knots(sub)
 
@@ -61,13 +61,13 @@ def general_subset(knots: Iterable[Real], insides: Iterable[bool]) -> SubSetR1:
     Transforms the knots real values and the vector of insides into a SubSetR1
 
     Basically it gets all the knots from a group of subsets:
-    * internal value of SingleValueR1
-    * start and end of an IntervalR1
-    * knots of the internals for case DisjointR1
+    * internal value of SingleValue
+    * start and end of an Interval
+    * knots of the internals for case Disjoint
     and then mark the middle points from the
 
-    Then, this function walks from left to right, deciding which SingleValueR1
-    or IntervalR1 should be gotten to make the return SubSetR1.
+    Then, this function walks from left to right, deciding which SingleValue
+    or Interval should be gotten to make the return SubSetR1.
 
     This is an internal function and should not be used careless
     """
@@ -76,11 +76,11 @@ def general_subset(knots: Iterable[Real], insides: Iterable[bool]) -> SubSetR1:
     if len(insides) != 2 * len(knots) + 1:
         raise ValueError(f"Invalid: knots = {knots}, insides = {insides}")
     if all(insides):
-        return WholeR1()
+        return Whole()
     if not any(insides):
-        return EmptyR1()
+        return Empty()
 
-    items: List[Union[SingleValueR1, IntervalR1]] = []
+    items: List[Union[SingleValue, Interval]] = []
     start: Union[None, Real] = None
     close: bool = False
     for i, knot in enumerate(knots):
@@ -90,13 +90,13 @@ def general_subset(knots: Iterable[Real], insides: Iterable[bool]) -> SubSetR1:
         if left == midd == righ:
             continue
         if not left and not righ:
-            items.append(SingleValueR1(knot))
+            items.append(SingleValue(knot))
             continue
         if left:  # Finish interval
             if start is None:
                 newinterv = lower(knot, midd)
             else:
-                newinterv = IntervalR1(start, knot, close, midd)
+                newinterv = Interval(start, knot, close, midd)
             items.append(newinterv)
             start = None
         if righ:
@@ -109,7 +109,7 @@ def general_subset(knots: Iterable[Real], insides: Iterable[bool]) -> SubSetR1:
     if len(items) == 1:
         return items[0]
 
-    return DisjointR1(items)
+    return Disjoint(items)
 
 
 def unite(*subsets: SubSetR1) -> SubSetR1:
