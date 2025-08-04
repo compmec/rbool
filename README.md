@@ -11,9 +11,9 @@
 
 A python package for unidimensional boolean operations
 
-Simple example
+#### Simple example
 
-```python3
+```python
 >>> from rbool import *
 >>> interval = Interval(-10, 5)  # Create a closed interval
 >>> interval
@@ -27,9 +27,19 @@ Simple example
 [-10, 5] U {6, 10}
 >>> interval - {2, 3}  # Remove single values from interval
 [-10, 2) U (2, 3) U (3, 5] U {6, 10}
+>>> [-8, 3] in interval  # Checks if [-8, 3] is inside the interval
+True
 ```
 
-Other features:
+The usual operations happens between two subsets:
+* `A | B`: union
+* `A & B`: intersection
+* `~A`: complementar
+* `A ^ B`: XOR
+* `A - B`: subtract
+* `A in B`: is subset ?
+
+#### Useful functions
 
 ```python
 >>> minimum("[-3, 10]")  # Gets the minimum value from subset
@@ -45,8 +55,12 @@ Other features:
 (-inf, 5]
 >>> {-15, 0} in lower(5)  # -15 and 0 are inside (-inf, 5] ?
 True
->>> [-3, 6] in lower(5)  # interval [-3, 6] is inside (-inf, 5] ?
+>>> [-3, 6] in bigger(5)  # interval [-3, 6] is inside [5, inf) ?
 False
+>>> scale("[-3, 10) U {15}", 2)  # Maps each value 'x' to '2*x'
+[-6, 20) U {30}
+>>> move("[-3, 10) U {15}", -8)  # Maps each value 'x' to 'x - 8'
+[-8, 2) U {7}
 ```
 
 
