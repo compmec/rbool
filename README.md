@@ -11,6 +11,44 @@
 
 A python package for unidimensional boolean operations
 
+Simple example
+
+```python3
+>>> from rbool import *
+>>> interval = Interval(-10, 5)  # Create a closed interval
+>>> interval
+[-10, 5]
+>>> interval | (3, 8)  # Unite with open interval
+[-10, 8)
+>>> ~interval  # Complementar of the interval
+(-inf, 10) U (5, inf)
+>>> interval |= {-2, 6, 10}  # Unite with single values
+>>> interval
+[-10, 5] U {6, 10}
+>>> interval - {2, 3}  # Remove single values from interval
+[-10, 2) U (2, 3) U (3, 5] U {6, 10}
+```
+
+Other features:
+
+```python
+>>> minimum("[-3, 10]")  # Gets the minimum value from subset
+-3
+>>> minimum("(-3, 10]")  # Returns None, there's no minimum
+>>> infimum("(-3, 10]")  # Gets the infimum value from subset
+-3
+>>> maximum("(-3, 10]")  # Gets the maximum value
+10
+>>> supremum("(-3, 10]")
+10
+>>> lower(5)  # All values on real line less than 5
+(-inf, 5]
+>>> {-15, 0} in lower(5)  # -15 and 0 are inside (-inf, 5] ?
+True
+>>> [-3, 6] in lower(5)  # interval [-3, 6] is inside (-inf, 5] ?
+False
+```
+
 
 ### Installation:
 
