@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rbool"
-version = "0.0.2"
+version = "0.0.3"
 description = "1D boolean operations"
 authors = ["Carlos Adir <carlos.adir.leite@gmail.com>"]
 readme = "README.md"

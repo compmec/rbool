@@ -30,6 +30,12 @@ def test_to():
     with pytest.raises(ValueError):
         To.finite("inf")
 
+    assert To.real("1") == 1
+    assert isinstance(To.real("1"), int)
+    assert isinstance(To.real("-3"), int)
+
+    assert To.real("1/3") == To.rational(1, 3)
+
 
 @pytest.mark.order(1)
 @pytest.mark.timeout(1)

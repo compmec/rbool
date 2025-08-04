@@ -64,6 +64,17 @@ class To:
         """
         if isinstance(number, Real):
             return number
+        if isinstance(number, str):
+            if "/" in number:
+                parts = tuple(map(To.real, number.split("/")))
+                number = To.rational(parts[0], 1)
+                for denom in parts[1:]:
+                    number /= denom
+                return To.real(number)
+            try:
+                return To.integer(number)
+            except ValueError:
+                pass
         return float(number)
 
     @staticmethod
