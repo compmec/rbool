@@ -20,3 +20,6 @@ Future.scale = scale
 Future.move = move
 
 __version__ = importlib.metadata.version("rbool")
+
+if __name__ == "__main__":
+    pass
