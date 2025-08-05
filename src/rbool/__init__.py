@@ -2,8 +2,6 @@
 Init file that includes the most used classes and functions of the module
 """
 
-import importlib
-
 from .base import Empty, Future, SubSetR1, Whole
 from .bool1d import contains, extract_knots, intersect, invert, unite
 from .converter import from_any
@@ -19,4 +17,7 @@ Future.contains = contains
 Future.scale = scale
 Future.move = move
 
-__version__ = importlib.metadata.version("rbool")
+__version__ = "0.0.4"
+
+if __name__ == "__main__":
+    pass
